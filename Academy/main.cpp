@@ -55,15 +55,15 @@ public:
 	}
 
 	//          Methods:
-	virtual void info()const
+	virtual std::ostream& info(std::ostream& os)const
 	{
-		cout << last_name << " " << first_name << " " << age << endl;
+		return os << last_name << " " << first_name << " " << age;
 	}
 };
 
 std::ostream& operator<<(std::ostream& os, const Human& obj)
 {
-	return os << obj.get_last_name() << " " << obj.get_first_name() << " " << obj.get_age();
+	return obj.info(os);
 }
 
 #define STUDENT_TAKE_PARAMETERS const std::string& speciality, const std::string& group, double rating, double attendance
@@ -125,10 +125,9 @@ public:
 	}
 
 	//              Methods:
-	void info()const override
+	std::ostream& info(std::ostream& os)const override
 	{
-		Human::info();
-		cout << speciality << " " << group << " " << rating << " " << attendance << endl;
+		return Human::info(os) << " " << speciality << " " << group << " " << rating << " " << attendance;
 	}
 };
 
@@ -169,14 +168,15 @@ public:
 		cout << "TDestructor:\t" << this << endl;
 	}
 	//             Methods
-	void info()const override
+	std::ostream& info(std::ostream& os)const override
 	{
-		Human::info();
-		cout << speciality << " " << experience << endl;
+		return Human::info(os)<< " " << speciality << " " << experience;
 	}
 };
+
 #define GRADUATE_TAKE_PARAMETERS const std::string& subject
 #define GRADUATE_GIVE_PARAMETERS subject
+
 class Graduate :public Student
 {
 	std::string subject;
@@ -201,10 +201,9 @@ public:
 		cout << "GDestructor:\t" << this << endl;
 	}
 	//             Methods
-	void info()const override
+	std::ostream& info(std::ostream& os)const override
 	{
-		Student::info();
-		cout << subject << endl;
+		return Student::info(os) << " " << subject << endl;
 	}
 };
 
@@ -243,7 +242,7 @@ void main()
 	std::ofstream fout("group.txt");
 	for (int i = 0; i < sizeof(group) / sizeof(group[0]);i++)
 	{
-		group[i]->info();
+		group[i]->info(cout);
 		fout << *group[i] << endl;
 		cout << delimeter << endl;
 	}
