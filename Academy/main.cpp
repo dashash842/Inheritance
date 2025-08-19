@@ -10,12 +10,21 @@ using std::endl;
 #define HUMAN_TAKE_PARAMETERS const std::string& last_name, const std::string first_name, int age
 #define HUMAN_GIVE_PARAMETERS last_name, first_name, age
 
+
 class Human
 {
+	static const int TYPE_WIDTH = 12;
+	static const int NAME_WIDTH = 12;
+	static const int AGE_WIDTH = 5;
+	static int count;   //объявление статической переменной
 	std::string last_name;
 	std::string first_name;
 	int age;
 public:
+	static int get_count()
+	{
+		return count;
+	}
 	const std::string& get_last_name()const
 	{
 		return last_name;
@@ -47,19 +56,37 @@ public:
 		set_last_name(last_name);
 		set_first_name(first_name);
 		set_age(age);
+		count++;
 		cout << "HConstructor:\t" << this << endl;
 	}
 	virtual ~Human()
 	{
+		count--;
 		cout << "HDestructor:\t" << this << endl;
 	}
 
 	//          Methods:
 	virtual std::ostream& info(std::ostream& os)const
 	{
-		return os << last_name << " " << first_name << " " << age;
+		os.width(TYPE_WIDTH);
+		os << std::left;
+		os << std::string(strchr(typeid(*this).name(), ' ') +1)+ ":";
+		//strchr(const char* str, char symbol);
+		//strchr() в указаной строке (str) находит указаный символ(symbol),
+		//и возвращает указатель на найденный символб или 'nullptr',
+		//если указанный символ отсутсвует в указаной строке.
+		//class Student;
+		//return os << last_name << " " << first_name << " " << age;
+		os.width(NAME_WIDTH); //метод width задает размер поля, в которое будет выделено значение;
+		os << last_name;
+		os.width(NAME_WIDTH);
+		os << first_name;
+		os.width(AGE_WIDTH);
+		os << age;
+		return os;
 	}
 };
+int Human::count = 0; //инициализация статической переменной(относится к определению класса - Class definition)
 
 std::ostream& operator<<(std::ostream& os, const Human& obj)
 {
@@ -71,6 +98,9 @@ std::ostream& operator<<(std::ostream& os, const Human& obj)
 
 class Student :public Human
 {
+	static const int SPECIALITY_WIDTH = 32;
+	static const int GROUP_WIDTH = 8;
+	static const int RAT_WIDTH = 8;
 	std::string speciality;
 	std::string group;
 	double rating;           //успеваемость
@@ -127,7 +157,17 @@ public:
 	//              Methods:
 	std::ostream& info(std::ostream& os)const override
 	{
-		return Human::info(os) << " " << speciality << " " << group << " " << rating << " " << attendance;
+		//return Human::info(os) << " " << speciality << " " << group << " " << rating << " " << attendance;
+		Human::info(os);
+		os.width(SPECIALITY_WIDTH);
+		os << speciality;
+		os.width(GROUP_WIDTH);
+		os << group;
+		os.width(RAT_WIDTH);
+		os << rating;
+		os.width(RAT_WIDTH);
+		os << attendance;
+		return os;
 	}
 };
 
@@ -136,6 +176,8 @@ public:
 
 class Teacher :public Human
 {
+	static const int SPECIALITY_WIDTH = 32;
+	static const int EXPERIENCE_WIDTH = 5;
 	std::string speciality;
 	int experience;
 public:
@@ -170,8 +212,15 @@ public:
 	//             Methods
 	std::ostream& info(std::ostream& os)const override
 	{
-		return Human::info(os)<< " " << speciality << " " << experience;
+		//return Human::info(os)<< " " << speciality << " " << experience;
+		Human::info(os);
+		os.width(SPECIALITY_WIDTH);
+		os << speciality;
+		os.width(EXPERIENCE_WIDTH);
+		os << experience;
+		return os;
 	}
+
 };
 
 #define GRADUATE_TAKE_PARAMETERS const std::string& subject
@@ -246,6 +295,8 @@ void main()
 		fout << *group[i] << endl;
 		cout << delimeter << endl;
 	}
+	cout << "Количество объектов: " << group[0]->get_count() << endl;
+	cout << "Количество объектов: " << Human::get_count() << endl;
 	fout.close();
 	system("notepad group.txt");
 
