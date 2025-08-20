@@ -1,6 +1,5 @@
 Student:    Pincman     Jessie      22   Chemistry                       WW_220  95      98      
 Teacher:    White       Walter      50   Chemistry                       25   
 Graduate:   Tven        Mark        22   Chemistry                       WW_220  96      99       Pogramm
-
 Student:    Vercetty    Tommy       30   Theft                           Vice    98      99      
 Teacher:    Diaz        Ricardo     50   Weapons distribution            20   

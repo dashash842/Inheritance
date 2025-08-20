@@ -1,6 +1,6 @@
 ﻿#include<iostream>
 #include<fstream>
-//#include<sting>
+#include<string>
 using std::cin;
 using std::cout;
 using std::endl;
@@ -278,9 +278,53 @@ void Save(Human* group[], const int n, const std::string& filename)
 	cmd += filename;
 	system(cmd.c_str()); // метод c_str возвращает строку в виде массива символов(char*);
 }
+Human** Load(const std::string& filename, int& n)
+{
+	Human** group = nullptr;
+	std::ifstream fin(filename);
+	if (fin.is_open())
+	{
+		//1)подсчитываем количество объектов в файле:
+		n = 0;
+		std::string buffer;
+		while (!fin.eof())
+		{
+			std::getline(fin, buffer);
+			if (buffer.size() <32)continue;
+			n++;
+		}
+		cout << "Количество объектов: " << n << endl;
 
+		//2) Выделяем память под объекты:
+		group = new Human * [n];
+
+		//3)Возвращаемся в начало файла, для того чтобы прочитать из него  сами объекты
+		cout << "Position " << fin.tellg() << endl; // method tellg() возвращает текущую Get-позицию курсора на чтение. -1 значит eof();
+		fin.clear();
+		fin.seekg(0);  // метод seekg(n), переводит get-курсор (на чтение) в указанную позицию 'n';
+		cout << "Position " << fin.tellg() << endl; // method tellg() возвращает текущую Get-позицию курсора на чтение. -1 значит eof();
+	
+	    
+	}
+	else
+	{
+		std::cerr << "Error: file not found" << endl;
+	}
+	//?) закрываем файл
+	fin.close();
+
+	return group;
+}
+void Clear(Human* group[], const int n)
+{
+	for (int i = 0; i < n;i++)
+	{
+		delete group[i];
+		cout << delimeter << endl;
+	}
+}
 //#define INHERITANCE
-#define POLYMORPHISM
+//#define POLYMORPHISM
 
 void main()
 {
@@ -300,6 +344,7 @@ void main()
 	graduate.info();
 #endif // INHERITANCE
 
+#ifdef POLYMORPHISM 
 	Human* group[] =
 	{
 		new Student("Pincman", "Jessie", 22, "Chemistry", "WW_220", 95, 98),
@@ -317,4 +362,10 @@ void main()
 		delete group[i];
 		cout << delimeter << endl;
 	}
+#endif // POLYMORPHISM
+
+	int n = 0;
+	Human** group = Load("group.txt", n);
+	Print(group, n);
+	Clear(group, n);
 }
